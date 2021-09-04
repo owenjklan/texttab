@@ -16,10 +16,13 @@ example_columns = [
         "width": 32,
         "align": "centre",
         "fg":    "yellow",
+        "bg":    "black",
     },
     {
         "label": "Years-of-Service",
         "align": "right",
+        "fg":    "blue",
+        "bg":    "black",
     }
 ]
 
