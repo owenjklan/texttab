@@ -87,9 +87,9 @@ class BasicTable(object):
                 fmt_str = " {:" + str(col['width'] - 2) + "s} "
 
             if "fg" in col.keys():
-                generated_label = const.FG_COLOURS[col["fg"]]
+                generated_label += const.FG_COLOURS[col["fg"]]
             if "bg" in col.keys():
-                generated_label = const.BG_COLOURS[col["bg"]]
+                generated_label += const.BG_COLOURS[col["bg"]]
 
             generated_label += fmt_str.format(col['label'])
             generated_label += "\033[0m"

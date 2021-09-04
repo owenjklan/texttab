@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import click
+
 from const import AVAILABLE_BORDERS
 from table_new import BasicTable
 
@@ -33,17 +35,39 @@ example_data = [
 ]
 
 
-def main():
+@click.command()
+@click.option("--fg", "fg",
+              type=str, metavar="FG_COLOUR",
+              default=None, show_default=None,
+              help=("Set table foreground colour."))
+@click.option("--bg", "bg",
+              type=str, metavar="BG_COLOUR",
+              default=None, show_default=None,
+              help=("Set table background colour."))
+@click.option("--head-fg", "head_fg",
+              type=str, metavar="FG_COLOUR",
+              default=None, show_default=None,
+              help=("Set table heading foreground colour."))
+@click.option("--head-bg", "head_bg",
+              type=str, metavar="BG_COLOUR",
+              default=None, show_default=None,
+              help=("Set table heading background colour."))
+def main(fg, bg, head_fg, head_bg):
     print(("Simple test program, designed to demonstrate alignment of "
            "columns as well as border styles.\n"))
     print("Border styles are available from 'const.AVAILABLE_BORDERS' list.\n")
     for border_style in AVAILABLE_BORDERS:
         print(f"Table style: {border_style}")
+        if fg is not None:
+            print(f"Foreground Colour:  {fg}")
+        if bg is not None:
+            print(f"Background Colour:  {bg}")
+
         bt = BasicTable(
             columns=example_columns,
             border=border_style,
-            fg="white", bg="blue",
-            head_fg="white", head_bg="blue",
+            fg=fg, bg=bg,
+            head_fg=head_fg, head_bg=head_bg,
         )
 
         for row in example_data:
