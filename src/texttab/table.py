@@ -125,16 +125,14 @@ class BasicTable(object):
         return line
 
     def _gen_table_row(self, rowdata):
-        col_index = 0
         line = self.border_symbols["VBAR"]
         col_strings = []
 
-        for col in self.columns:
+        for col_index, col in enumerate(self.columns):
             fmt_str = self._get_column_format_string(col)
             col_string = self.format_column_value(
                 col, rowdata[col_index], fmt_str)
             col_strings.append(col_string)
-            col_index += 1
         line += self.border_symbols["VBAR"].join(col_strings)
         line += self.border_symbols["VBAR"]
         return line
