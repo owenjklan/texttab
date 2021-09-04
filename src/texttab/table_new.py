@@ -2,6 +2,7 @@
 Basic text-based table classes
 """
 import const
+from const import FG_COLOURS, BG_COLOURS
 from fields import Field
 
 
@@ -149,15 +150,25 @@ class BasicTable(object):
 
     def format_column_value(self, col, rowdata, fmtstr):
         cell_field = Field.from_column(col, rowdata)
+        ret_str = ""
+
+        if "fg" in col.keys():
+            ret_str += FG_COLOURS[col["fg"]]
+        if "bg" in col.keys():
+            ret_str += BG_COLOURS[col["bg"]]
 
         if 'formatter' in col.keys():
             value_str = col['formatter'].format(rowdata)
         else:
-            # value_str = str(rowdata)
-            value_str = str(cell_field)
+            value_str = str(rowdata)
+            # value_str = str(cell_field)
             if len(value_str) > col['width'] - 2:
                 value_str = value_str[:col['width'] - 5] + "..."
-        ret_str = fmtstr.format(value_str)
+        ret_str += fmtstr.format(value_str)
+
+        if "fg" in col.keys() or "bg" in col.keys():
+            ret_str += "\033[0m"
+
         return ret_str
 
     def _get_column_format_string(self, col):
