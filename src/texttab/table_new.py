@@ -7,7 +7,8 @@ from fields import Field
 
 
 class BasicTable(object):
-    def __init__(self, columns=None, border="single"):
+    def __init__(self, columns=None, border="single", fg=None, bg=None,
+                 head_fg=None, head_bg=None):
         self.__col_width_calculated = False
 
         self.columns = columns
@@ -15,6 +16,10 @@ class BasicTable(object):
         self.width = self.calculate_table_width()
         self.generate_column_labels()
         self.rows = []
+        self.fg = fg
+        self.bg = bg
+        self.head_fg = head_fg
+        self.head_bg = head_bg
 
         if border not in const.AVAILABLE_BORDERS:
             exception_string = "Unknown border style: '" + border + "'"
@@ -102,28 +107,71 @@ class BasicTable(object):
         return table_width
 
     def generate_header_line(self):
-        line = self.border_symbols['VBAR']
+        line = ""
+        colour_string = ""
+        reset_colours = False
+
+        if self.head_fg is not None:
+            colour_string += FG_COLOURS[self.head_fg]
+            reset_colours = True
+        if self.head_bg is not None:
+            colour_string += BG_COLOURS[self.head_bg]
+            reset_colours = True
+
+        line += colour_string + self.border_symbols['VBAR']
         column_labels = [col['gen_label'] for col in self.columns]
-        line += self.border_symbols["VBAR"].join(column_labels)
-        line += self.border_symbols["VBAR"]
+        line += (colour_string + self.border_symbols["VBAR"]).join(column_labels)
+        line += colour_string + self.border_symbols["VBAR"]
+
+        if reset_colours is True:
+            line += "\033[0m"
         return line
 
     def _gen_header_top(self):
-        line = self.border_symbols["TOP_LEFT"]
+        line = ""
+        reset_colours = False
+
+        if self.head_fg is not None:
+            line += FG_COLOURS[self.head_fg]
+            reset_colours = True
+        if self.head_bg is not None:
+            line += BG_COLOURS[self.head_bg]
+            reset_colours = True
+
+        line += self.border_symbols["TOP_LEFT"]
         col_bars = [
             col['width'] * self.border_symbols["HBAR"] for col in self.columns
         ]
         line += self.border_symbols["TOP_TEE"].join(col_bars)
         line += self.border_symbols["TOP_RIGHT"]
+
+        if reset_colours is True:
+            line += "\033[0m"
         return line
 
     def _gen_header_bottom(self):
-        line = self.border_symbols["LEFT_TEE"]
+        line = ""
+        colour_string = ""
+        reset_colours = False
+
+        if self.head_fg is not None:
+            colour_string += FG_COLOURS[self.head_fg]
+            reset_colours = True
+        if self.head_bg is not None:
+            colour_string += BG_COLOURS[self.head_bg]
+            reset_colours = True
+
+        line += colour_string  # Begin our colour, column value might overwrite
+        line += self.border_symbols["LEFT_TEE"]
         col_bars = [
             col['width'] * self.border_symbols["HBAR"] for col in self.columns
         ]
-        line += self.border_symbols["INTERSECT"].join(col_bars)
-        line += self.border_symbols["RIGHT_TEE"]
+        line += colour_string + self.border_symbols["INTERSECT"].join(col_bars)
+        line += colour_string + self.border_symbols["RIGHT_TEE"]
+
+        if reset_colours is True:
+            line += "\033[0m"
+
         return line
 
     def _gen_table_bottom(self):
@@ -136,7 +184,17 @@ class BasicTable(object):
         return line
 
     def _gen_table_row(self, rowdata):
-        line = self.border_symbols["VBAR"]
+        colour_string = ""
+        reset_colours = False
+
+        if self.fg is not None:
+            colour_string += FG_COLOURS[self.fg]
+            reset_colours = True
+        if self.bg is not None:
+            colour_string += BG_COLOURS[self.bg]
+            reset_colours = True
+
+        line = colour_string + self.border_symbols["VBAR"]
         col_strings = []
 
         for col_index, col in enumerate(self.columns):
@@ -144,19 +202,36 @@ class BasicTable(object):
             col_string = self.format_column_value(
                 col, rowdata[col_index], fmt_str)
             col_strings.append(col_string)
-        line += self.border_symbols["VBAR"].join(col_strings)
-        line += self.border_symbols["VBAR"]
+        line += (colour_string + self.border_symbols["VBAR"]).join(col_strings)
+        line += colour_string + self.border_symbols["VBAR"]
+
+        if reset_colours is True:
+            line += "\033[0m"
+
         return line
 
     def format_column_value(self, col, rowdata, fmtstr):
-        cell_field = Field.from_column(col, rowdata)
+        # cell_field = Field.from_column(col, rowdata)
         ret_str = ""
+        colour_string = ""
+        reset_colour = False
 
+        # Prefix our colour options, as ANSI codes
         if "fg" in col.keys():
-            ret_str += FG_COLOURS[col["fg"]]
+            colour_string += FG_COLOURS[col["fg"]]
+            reset_colour = True
         if "bg" in col.keys():
-            ret_str += BG_COLOURS[col["bg"]]
+            colour_string += BG_COLOURS[col["bg"]]
+            reset_colour = True
+        if "bold" in col.keys():
+            colour_string += "\033[1m"
+            reset_colour = True
+        if "invert" in col.keys():
+            colour_string += "\033[7m"
+            reset_colour = True
 
+        # Get our width-padded value string, no colour modifiers to affect
+        # length calculations.
         if 'formatter' in col.keys():
             value_str = col['formatter'].format(rowdata)
         else:
@@ -164,9 +239,10 @@ class BasicTable(object):
             # value_str = str(cell_field)
             if len(value_str) > col['width'] - 2:
                 value_str = value_str[:col['width'] - 5] + "..."
-        ret_str += fmtstr.format(value_str)
+        ret_str += colour_string + fmtstr.format(value_str)
 
-        if "fg" in col.keys() or "bg" in col.keys():
+        # Reset ANSI sequence if we tweaked any colour options
+        if reset_colour is True:
             ret_str += "\033[0m"
 
         return ret_str

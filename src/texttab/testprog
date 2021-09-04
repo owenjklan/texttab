@@ -39,7 +39,12 @@ def main():
     print("Border styles are available from 'const.AVAILABLE_BORDERS' list.\n")
     for border_style in AVAILABLE_BORDERS:
         print(f"Table style: {border_style}")
-        bt = BasicTable(columns=example_columns, border=border_style)
+        bt = BasicTable(
+            columns=example_columns,
+            border=border_style,
+            fg="white", bg="blue",
+            head_fg="white", head_bg="blue",
+        )
 
         for row in example_data:
             bt.add_row(row)
