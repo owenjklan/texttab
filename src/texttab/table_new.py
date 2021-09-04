@@ -106,17 +106,36 @@ class BasicTable(object):
         table_width += 2 + (self.num_columns - 1)
         return table_width
 
-    def generate_header_line(self):
-        line = ""
+    def get_colour_prefix(self):
         colour_string = ""
-        reset_colours = False
+        reset_colour = False
+
+        if self.fg is not None:
+            colour_string += FG_COLOURS[self.fg]
+            reset_colour = True
+        if self.bg is not None:
+            colour_string += BG_COLOURS[self.bg]
+            reset_colour = True
+
+        return colour_string, reset_colour
+
+    def get_head_colour_prefix(self):
+        colour_string = ""
+        reset_colour = False
 
         if self.head_fg is not None:
             colour_string += FG_COLOURS[self.head_fg]
-            reset_colours = True
+            reset_colour = True
         if self.head_bg is not None:
             colour_string += BG_COLOURS[self.head_bg]
-            reset_colours = True
+            reset_colour = True
+
+        return colour_string, reset_colour
+
+
+    def generate_header_line(self):
+        line = ""
+        colour_string, reset_colours = self.get_head_colour_prefix()
 
         line += colour_string + self.border_symbols['VBAR']
         column_labels = [col['gen_label'] for col in self.columns]
@@ -151,15 +170,7 @@ class BasicTable(object):
 
     def _gen_header_bottom(self):
         line = ""
-        colour_string = ""
-        reset_colours = False
-
-        if self.head_fg is not None:
-            colour_string += FG_COLOURS[self.head_fg]
-            reset_colours = True
-        if self.head_bg is not None:
-            colour_string += BG_COLOURS[self.head_bg]
-            reset_colours = True
+        colour_string, reset_colours = self.get_head_colour_prefix()
 
         line += colour_string  # Begin our colour, column value might overwrite
         line += self.border_symbols["LEFT_TEE"]
@@ -175,24 +186,21 @@ class BasicTable(object):
         return line
 
     def _gen_table_bottom(self):
-        line = self.border_symbols["BOTTOM_LEFT"]
+        colour_string, reset_colours = self.get_colour_prefix()
+
+        line = colour_string + self.border_symbols["BOTTOM_LEFT"]
         col_bars = [
             col['width'] * self.border_symbols["HBAR"] for col in self.columns
         ]
-        line += self.border_symbols["BOTTOM_TEE"].join(col_bars)
-        line += self.border_symbols["BOTTOM_RIGHT"]
+        line += (colour_string + self.border_symbols["BOTTOM_TEE"]).join(col_bars)
+        line += colour_string + self.border_symbols["BOTTOM_RIGHT"]
+
+        if reset_colours is True:
+            line = line + "\033[0m"
         return line
 
     def _gen_table_row(self, rowdata):
-        colour_string = ""
-        reset_colours = False
-
-        if self.fg is not None:
-            colour_string += FG_COLOURS[self.fg]
-            reset_colours = True
-        if self.bg is not None:
-            colour_string += BG_COLOURS[self.bg]
-            reset_colours = True
+        colour_string, reset_colours = self.get_colour_prefix()
 
         line = colour_string + self.border_symbols["VBAR"]
         col_strings = []
