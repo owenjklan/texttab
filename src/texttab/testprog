@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from const import AVAILABLE_BORDERS
-from table import BasicTable
+from table_new import BasicTable
 
 
 example_columns = [
