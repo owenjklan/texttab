@@ -1,7 +1,7 @@
 """
 Basic text-based table classes
 """
-from . import const
+import const
 
 
 class BasicTable(object):

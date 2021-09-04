@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from table import BasicTable
 
@@ -19,4 +19,4 @@ bt = BasicTable(columns=example_columns)
 
 lines = bt.render()
 for l in lines:
-    print l
+    print(l)
