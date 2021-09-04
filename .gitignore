@@ -1,5 +1,9 @@
+# Build/Distribution stuff
+build/
+dist/
+
 # Python stuff
-__pycache__
+__pycache__/
 *.pyc
 *.pyo
 
