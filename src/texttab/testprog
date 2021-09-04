@@ -2,7 +2,7 @@
 import click
 
 from const import AVAILABLE_BORDERS
-from table_new import BasicTable
+from table import BasicTable
 
 
 example_columns = [
@@ -12,6 +12,8 @@ example_columns = [
         "align": "left",
         "fg":    "green",
         "bg":    "black",
+        "head_fg": "yellow",
+        "head_bg": "blue",
     },
     {
         "label": "Email",
@@ -25,6 +27,7 @@ example_columns = [
         "align": "right",
         "fg":    "blue",
         "bg":    "black",
+        "head_fg": "white",
     }
 ]
 

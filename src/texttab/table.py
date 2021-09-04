@@ -86,9 +86,14 @@ class BasicTable(object):
             else:
                 fmt_str = " {:" + str(col['width'] - 2) + "s} "
 
-            if "fg" in col.keys():
+            if "head_fg" in col.keys():
+                generated_label += const.FG_COLOURS[col["head_fg"]]
+            elif "fg" in col.keys():
                 generated_label += const.FG_COLOURS[col["fg"]]
-            if "bg" in col.keys():
+
+            if "head_bg" in col.keys():
+                generated_label += const.BG_COLOURS[col["head_bg"]]
+            elif "bg" in col.keys():
                 generated_label += const.BG_COLOURS[col["bg"]]
 
             generated_label += fmt_str.format(col['label'])
