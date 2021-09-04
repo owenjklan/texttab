@@ -8,11 +8,14 @@ example_columns = [
         "label": "Name",
         "width": 25,
         "align": "left",
+        "fg":    "green",
+        "bg":    "black",
     },
     {
         "label": "Email",
         "width": 32,
         "align": "centre",
+        "fg":    "yellow",
     },
     {
         "label": "Years-of-Service",
