@@ -69,6 +69,7 @@ class BasicTable(object):
 
     def generate_column_labels(self):
         for col in self.columns:
+            generated_label = ""
             if "align" in col.keys():
                 if col['align'].lower() in ("center", "centre"):
                     fmt_str = " {:^" + str(col['width'] - 2) + "s} "
@@ -78,7 +79,15 @@ class BasicTable(object):
                     fmt_str = " {:>" + str(col['width'] - 2) + "s} "
             else:
                 fmt_str = " {:" + str(col['width'] - 2) + "s} "
-            col['gen_label'] = fmt_str.format(col['label'])
+
+            if "fg" in col.keys():
+                generated_label = const.FG_COLOURS[col["fg"]]
+            if "bg" in col.keys():
+                generated_label = const.BG_COLOURS[col["bg"]]
+
+            generated_label += fmt_str.format(col['label'])
+            generated_label += "\033[0m"
+            col['gen_label'] = generated_label
 
     def calculate_table_width(self):
         if not self.__col_width_calculated:
