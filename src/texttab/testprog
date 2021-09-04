@@ -5,15 +5,35 @@ from const import AVAILABLE_BORDERS
 from table import BasicTable
 
 
+class TestFormatter(object):
+    @classmethod
+    def format(cls, value, col):
+        format_string = "\033[0m"
+        reset = False
+        rv = int(value)
+        if rv >= 10:
+            format_string += "\033[5m"  # Blink
+            format_string += "\033[1m"  # Bold
+            format_string += "\033[32m"  # Green
+            reset = True
+        elif rv < 10 and rv > 1:
+            format_string += "\033[34m"  # Blue??
+            reset = True
+        else:
+            format_string += "\033[31m"  # Red
+            reset = True
+        return format_string, str(value), reset
+
+
 example_columns = [
     {
         "label": "Name",
         "width": 25,
         "align": "left",
-        "fg":    "green",
+        "fg":    "magenta",
         "bg":    "black",
-        "head_fg": "yellow",
-        "head_bg": "blue",
+        "head_bg": "white",
+        "head_fg": "blue",
     },
     {
         "label": "Email",
@@ -21,13 +41,18 @@ example_columns = [
         "align": "centre",
         "fg":    "yellow",
         "bg":    "black",
+        "head_bg": "white",
+        "head_fg": "blue",
     },
     {
         "label": "Years-of-Service",
         "align": "right",
-        "fg":    "blue",
+        "fg": "white",
+        # "fg":    "blue",
         "bg":    "black",
-        "head_fg": "white",
+        "head_bg": "white",
+        "head_fg": "blue",
+        "formatter": TestFormatter,
     }
 ]
 

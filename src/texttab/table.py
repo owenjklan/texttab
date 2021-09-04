@@ -246,7 +246,7 @@ class BasicTable(object):
         # Get our width-padded value string, no colour modifiers to affect
         # length calculations.
         if 'formatter' in col.keys():
-            value_str = col['formatter'].format(rowdata)
+            colour_string, value_str, reset_colour = col['formatter'].format(rowdata, col)
         else:
             value_str = str(rowdata)
             # value_str = str(cell_field)
