@@ -11,32 +11,28 @@ class ColumnFormatter(object):
         raise NotImplemented
 
 
-class ReadableBytesFormatter(ColumnFormatter):
-    def __init__(self, suffix="b"):
-        super(ReadableBytesFormatter, self).__init__()
-        self.suffix = suffix
+class ReadableBytesFormatter(object):
+    @classmethod
+    def format(cls, value, column):
+        format_value = cls.human_readable_bytes(value)
+        return "", format_value, False
 
-    def format(self, value):
-        return self.human_readable_bytes(value)
-
-    def human_readable_bytes(self, byteval):
+    def human_readable_bytes(byteval):
         if byteval / 2**40 >= 1:
-            return "{:>2.1f} T{} ".format(byteval / 2**40, self.suffix)
+            return "{:>2.1f} TB ".format(byteval / 2**40)
         elif byteval / 2**30 >= 1:
-            return "{:>2.1f} G{} ".format(byteval / 2**30, self.suffix)
+            return "{:>2.1f} GB ".format(byteval / 2**30)
         elif byteval / 2**20 >= 1:
-            return "{:>2.1f} M{} ".format(byteval / 2**20, self.suffix)
+            return "{:>2.1f} MB ".format(byteval / 2**20)
         elif byteval / 2**10 >= 1:
-            return "{:>2.1f} K{} ".format(byteval / 2**10, self.suffix)
+            return "{:>2.1f} KB ".format(byteval / 2**10)
         else:
-            return "{:>3.0f}  {} ".format(byteval, self.suffix)
+            return "{:>3.0f} Bytes".format(byteval)
 
 
 class UnixPermissionsFormatter(ColumnFormatter):
-    def __init__(self):
-        super(UnixPermissionsFormatter, self).__init__()
-
-    def format(self, value):
+    @classmethod
+    def format(cls, value, column):
         d = {
             0: '---',
             1: '--x',
@@ -50,8 +46,8 @@ class UnixPermissionsFormatter(ColumnFormatter):
         mode_char = "-"
         ret_str = "{}{}{}{}".format(
             mode_char,
-            d[(value & 0700) >> 6],
-            d[(value & 0070) >> 3],
-            d[value & 0007]
+            d[(value & 0o0700) >> 6],
+            d[(value & 0o0070) >> 3],
+            d[value & 0o0007]
         )
-        return ret_str
+        return "", ret_str, False

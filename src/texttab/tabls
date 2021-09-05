@@ -1,34 +1,18 @@
 #!/usr/bin/env python3
+import os
+import stat
+
 import click
 
 from const import AVAILABLE_BORDERS
 from table import BasicTable
-
-
-class TestFormatter(object):
-    @classmethod
-    def format(cls, value, col):
-        format_string = "\033[0m"
-        reset = False
-        rv = int(value)
-        if rv >= 10:
-            format_string += "\033[5m"  # Blink
-            format_string += "\033[1m"  # Bold
-            format_string += "\033[32;47m"  # Green
-            reset = True
-        elif rv < 10 and rv > 1:
-            format_string += "\033[34;47m"  # Blue??
-            reset = True
-        else:
-            format_string += "\033[31;47m"  # Red
-            reset = True
-        return format_string, str(value), reset
+from formatters import ReadableBytesFormatter, UnixPermissionsFormatter
 
 
 example_columns = [
     {
-        "label": "Name",
-        "width": 25,
+        "label": "File Name",
+        "width": 32,
         "align": "left",
         "bg":    "white",
         "fg":    "black",
@@ -36,8 +20,8 @@ example_columns = [
         "head_fg": "blue",
     },
     {
-        "label": "Email",
-        "width": 32,
+        "label": "Owner - User",
+        "width": 14,
         "align": "centre",
         "bg":    "white",
         "fg":    "black",
@@ -45,24 +29,29 @@ example_columns = [
         "head_fg": "blue",
     },
     {
-        "label": "Years-of-Service",
+        "label": "Size (bytes)",
         "align": "right",
+        "width": 15,
         "bg":    "white",
         "fg":    "black",
         "head_bg": "white",
         "head_fg": "blue",
-        "formatter": TestFormatter,
-    }
-]
-
-example_data = [
-    ("Owen Klan", "oklan@example.com", 1),
-    ("Barry Badlow", "bbadlow@example.com", 13),
-    ("Genevive Goodhigh Really-Long-Named", "ggoodhigh@example.com", 2),
+        "formatter": ReadableBytesFormatter,
+    },
+    {
+        "label": "Permissions",
+        "align": "centre",
+        "bg": "white",
+        "fg": "black",
+        "head_bg": "white",
+        "head_fg": "blue",
+        "formatter": UnixPermissionsFormatter,
+    },
 ]
 
 
 @click.command()
+@click.argument("path")
 @click.option("--fg", "fg",
               type=str, metavar="FG_COLOUR",
               default=None, show_default=None,
@@ -79,29 +68,45 @@ example_data = [
               type=str, metavar="BG_COLOUR",
               default=None, show_default=None,
               help=("Set table heading background colour."))
-def main(fg, bg, head_fg, head_bg):
+def main(path, fg, bg, head_fg, head_bg):
     print(("Simple test program, designed to demonstrate alignment of "
            "columns as well as border styles.\n"))
     print("Border styles are available from 'const.AVAILABLE_BORDERS' list.\n")
-    for border_style in AVAILABLE_BORDERS:
-        print(f"Table style: {border_style}")
-        if fg is not None:
-            print(f"Foreground Colour:  {fg}")
-        if bg is not None:
-            print(f"Background Colour:  {bg}")
 
-        bt = BasicTable(
-            columns=example_columns,
-            border=border_style,
-            fg=fg, bg=bg,
-            head_fg=head_fg, head_bg=head_bg,
-        )
+    border_style = "single-rounded"
 
-        for row in example_data:
-            bt.add_row(row)
+    print(f"Table style: {border_style}")
+    if fg is not None:
+        print(f"Foreground Colour:  {fg}")
+    if bg is not None:
+        print(f"Background Colour:  {bg}")
 
-        print("\n".join(bt.render()))
-        print("")
+    bt = BasicTable(
+        columns=example_columns,
+        border=border_style,
+        fg=fg, bg=bg,
+        head_fg=head_fg, head_bg=head_bg,
+    )
+
+    dir_listing = sorted(os.listdir(path))
+
+    for entry in dir_listing:
+        name = entry
+
+        stat_struct = os.stat(os.path.join(path, entry))
+
+        owner = f"{stat_struct.st_uid}:{stat_struct.st_gid}"
+
+        size = stat_struct.st_size
+
+        mode = stat_struct.st_mode
+
+        row = (name, owner, size, mode)
+
+        bt.add_row(row)
+
+    print("\n".join(bt.render()))
+    print("")
 
 
 if __name__ == "__main__":
