@@ -27,7 +27,7 @@ class ReadableBytesFormatter(object):
         elif byteval / 2**10 >= 1:
             return "{:>2.1f} KB ".format(byteval / 2**10)
         else:
-            return "{:>3.0f} Bytes".format(byteval)
+            return "{:>3.0f} B ".format(byteval)
 
 
 class UnixPermissionsFormatter(ColumnFormatter):
