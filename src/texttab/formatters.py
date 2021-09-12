@@ -1,7 +1,7 @@
 """
 Formatter classes that can be applied to columns
 """
-
+import stat
 
 class ColumnFormatter(object):
     def __init__(self):
@@ -32,6 +32,23 @@ class ReadableBytesFormatter(object):
 
 class UnixPermissionsFormatter(ColumnFormatter):
     @classmethod
+    def get_mode_char(cls, value):
+        if stat.S_ISLNK(value):
+            return 'l'
+        elif stat.S_ISDIR(value):
+            return 'd'
+        elif stat.S_ISCHR(value):
+            return 'c'
+        elif stat.S_ISBLK(value):
+            return 'b'
+        elif stat.S_ISSOCK(value):
+            return 's'
+        elif stat.S_ISFIFO(value):
+            return '|'
+        else:
+            return '-'
+
+    @classmethod
     def format(cls, value, column):
         d = {
             0: '---',
@@ -43,7 +60,7 @@ class UnixPermissionsFormatter(ColumnFormatter):
             6: 'rw-',
             7: 'rwx',
         }
-        mode_char = "-"
+        mode_char = cls.get_mode_char(value)
         ret_str = "{}{}{}{}".format(
             mode_char,
             d[(value & 0o0700) >> 6],
