@@ -3,7 +3,6 @@ Basic text-based table classes
 """
 import texttab.const as const
 from texttab.const import FG_COLOURS, BG_COLOURS
-from fields import Field
 
 
 class BasicTable(object):
