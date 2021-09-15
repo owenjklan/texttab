@@ -4,9 +4,9 @@ import stat
 
 import click
 
-from const import AVAILABLE_BORDERS
-from table import BasicTable
-from formatters import ReadableBytesFormatter, UnixPermissionsFormatter
+from texttab.const import AVAILABLE_BORDERS
+from texttab.table import BasicTable
+from texttab.formatters import ReadableBytesFormatter, UnixPermissionsFormatter
 
 
 example_columns = [

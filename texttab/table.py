@@ -1,8 +1,8 @@
 """
 Basic text-based table classes
 """
-import const
-from const import FG_COLOURS, BG_COLOURS
+import texttab.const as const
+from texttab.const import FG_COLOURS, BG_COLOURS
 from fields import Field
 
 

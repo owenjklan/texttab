@@ -1,4 +1,4 @@
-from const import FG_COLOURS, BG_COLOURS
+from texttab.const import FG_COLOURS, BG_COLOURS
 
 DEFAULT_FG = "white"
 DEFAULT_BG = "black"
