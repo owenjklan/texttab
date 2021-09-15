@@ -2,13 +2,13 @@ from distutils.core import setup
 setup(
     name='texttab',
     packages=['texttab'],
-    version='0.5.1',
+    version='0.5.2',
     license='MIT',
     description='Create ASCII tables that are flexible. Colours, various border styles and custom column formatters are some of the features.',   # Give a short description about your library
     author='Owen Klan',
     author_email='owen.j.klan@gmail.com',
     url='https://github.com/owenjklan/texttab',
-    download_url='https://github.com/owenjklan/texttab/archive/refs/tags/v0.5.1.tar.gz',
+    download_url='https://github.com/owenjklan/texttab/archive/refs/tags/v0.5.2.tar.gz',
     keywords=['command-line', 'ascii', 'tables', 'formatters', 'extensible'],
     install_requires=[
     ],
