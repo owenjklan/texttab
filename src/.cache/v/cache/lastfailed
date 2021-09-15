@@ -1,6 +1,0 @@
-{
-  "test/test_table_basics.py::test_data_row_min_fields_required": true,
-  "test/test_table_basics.py::test_data_row_suitable_type_given": true,
-  "test/test_table_basics.py::test_header_label_alignments[test_columns3-\\u2502     Column 3 \\u2502    Value \\u2502]": true,
-  "test/test_table_basics.py::test_header_minimum_width[test_columns0-21]": true
-}
