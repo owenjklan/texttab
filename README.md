@@ -124,12 +124,16 @@ customer cell formatting in the resultant table.
 ### Example Data
 This list contains tuples for example data. That's it. Each defined column will
 require an entry in a row's tuple. Note that the data for a row doesn't have to
-be a `tuple`. Lists are also valid.
+be a `tuple`. Lists are also valid. If very close attention is paid to the
+middle row of data, then it can be seen that it is defined as a `list` literal,
+not a `tuple` literal, like the rows to either side of it. A real program
+probably wouldn't mix row sequence types like this. This was an explicit
+demonstration to show that either `list` or `tuple` can be used for row data.
 
 ```python
 example_data = [
     ("Owen Klan", "oklan@example.com", 1),
-    ("Barry Badlow", "bbadlow@example.com", 13),
+    ["Barry Badlow", "bbadlow@example.com", 13],
     ("Genevive Goodhigh Really-Long-Named", "ggoodhigh@example.com", 2),
 ]
 ```
@@ -153,6 +157,9 @@ Do note that the below output, despite being "pre-formatted", might have gaps
 between the line-drawing elements for each row. This depends on the default
 line-spacing used by your particular Markdown viewer, whether that is on Github
 or a dedicated application.
+
+Of course, colour and blinking output that is defined in the last column, will
+also not be visible in this README.
 ```text
 owen@pfhor:~/git/texttab$ examples/testprog
 Simple test program, designed to demonstrate alignment of columns as well as border styles.
