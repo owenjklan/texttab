@@ -62,14 +62,19 @@ class TestFormatter(object):
 ```
 
 The very last line of `TestFormatter`'s definition shows the expected values
-that are required in the returned tuple. Format string is optional. It will
-be _rendered_ (ie: printed to the terminal) but _does not count to the length
-of the value string_. The value string is the actual string-representation for
-what you want to appear in the table cell. The last element of the tuple,
-`reset`, indicates whether an ANSI "reset attributes" control sequence should
-be output. This is usually needed (ie: returned as `True`) if control sequences
-that manipulate colour or other text attributes, were used in the output
-format string.
+that are required in the returned tuple. Format string is optional, but if not
+used, then an empty string should be returned. Format strings will usually be
+ANSI terminal control sequences, especially those for colour and attributes.
+The returned format string value will be _rendered_ (ie: printed to the
+terminal) but _does not count to the length of the value string_.
+
+The value string is the actual string-representation for
+what you want to appear in the table cell.
+
+The last element of the tuple, `reset`, is a boolean and indicates whether an
+ANSI "reset attributes" control sequence should be output.  This is usually
+needed (ie: returned as `True`) if control sequences that manipulate colour or
+other text attributes, were used in the returned format string.
 
 ### Column Specifications
 Next in the example `testprog` source, comes the column definitions for the
@@ -121,12 +126,13 @@ This list contains tuples for example data. That's it. Each defined column will
 require an entry in a row's tuple. Note that the data for a row doesn't have to
 be a `tuple`. Lists are also valid.
 
+```python
 example_data = [
     ("Owen Klan", "oklan@example.com", 1),
     ("Barry Badlow", "bbadlow@example.com", 13),
     ("Genevive Goodhigh Really-Long-Named", "ggoodhigh@example.com", 2),
 ]
-
+```
 
 ### Command-line Options
 All of the decorators that are applied to the `main` function are part of how
@@ -143,6 +149,10 @@ Once all the data rows have been added, the `render()` method can be called.
 Note that `render()` returns a _list_ of lines.
 
 ### ... and the output?
+Do note that the below output, despite being "pre-formatted", might have gaps
+between the line-drawing elements for each row. This depends on the default
+line-spacing used by your particular Markdown viewer, whether that is on Github
+or a dedicated application.
 ```text
 owen@pfhor:~/git/texttab$ examples/testprog
 Simple test program, designed to demonstrate alignment of columns as well as border styles.
