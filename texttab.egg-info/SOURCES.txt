@@ -1,0 +1,14 @@
+LICENSE.txt
+README.md
+setup.cfg
+setup.py
+test/test_table_basics.py
+texttab/__init__.py
+texttab/const.py
+texttab/fields.py
+texttab/formatters.py
+texttab/table.py
+texttab.egg-info/PKG-INFO
+texttab.egg-info/SOURCES.txt
+texttab.egg-info/dependency_links.txt
+texttab.egg-info/top_level.txt
