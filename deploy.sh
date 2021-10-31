@@ -25,11 +25,10 @@ if [ -z $1 ]; then
     exit 1
 fi
 
-VERSION=$1
+VERSION=`python3 -c 'from texttab.version import version; print(version)'`
 
 info "Making VERSION substitutions..."
 sed -e "s/__VERSION_STR__/$VERSION/g" setup.py.in > setup.py
-
 
 info "Calling build..."
 python3 -m build
