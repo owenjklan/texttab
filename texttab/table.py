@@ -26,11 +26,17 @@ class BasicTable(object):
         self.border_style = border
         self.border_symbols = const.border_symbols[self.border_style]
 
+    def _gen_header_lines(self):
+        header_lines = [
+            self._gen_header_top(),
+            self.generate_header_line(),
+            self._gen_header_bottom(),
+        ]
+        return header_lines
+
     def render(self):
-        table_lines = []
-        table_lines.append(self._gen_header_top())
-        table_lines.append(self.generate_header_line())
-        table_lines.append(self._gen_header_bottom())
+        # Get the table's header lines
+        table_lines = self._gen_header_lines()
 
         for row in self.rows:
             table_lines.append(self._gen_table_row(row))
@@ -39,7 +45,7 @@ class BasicTable(object):
 
         return table_lines
 
-    def add_row(self, rowdata):
+    def add_row(self, rowdata, instant=False):
         """
         Provide data to fill in the columns.
         rowdata must be a list or a tuple so that ordering is guaranteed.
@@ -58,7 +64,10 @@ class BasicTable(object):
                 "Too many data items. "
                 "Received {}, expected {}".format(
                     len(rowdata), self.num_columns))
-        self.rows.append(rowdata)
+        if instant is False:
+            self.rows.append(rowdata)
+        else:
+            print(self._gen_table_row(rowdata))
 
     def calculate_column_widths(self):
         for col in self.columns:
