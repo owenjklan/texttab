@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from time import sleep
+
 import click
 
 from texttab.const import AVAILABLE_BORDERS
@@ -58,6 +60,9 @@ example_columns = [
 example_data = [
     ("Owen Klan", "oklan@example.com", 1),
     ["Barry Badlow", "bbadlow@example.com", 13],
+    ["Mallory Maldives", "mmaldy@example.com", 5],
+    ("Roger the Shrubber", "r.shrubberies@shrubguild.net", 6),
+    ("Artemis Entreri", "art.entreri@baerne.com.mz", 11),
     ("Genevive Goodhigh Really-Long-Named", "ggoodhigh@example.com", 2),
 ]
 
@@ -79,7 +84,12 @@ example_data = [
               type=str, metavar="BG_COLOUR",
               default=None, show_default=None,
               help=("Set table heading background colour."))
-def main(fg, bg, head_fg, head_bg):
+@click.option("--scroll", "scroll_flag",
+              type=bool, is_flag=True,
+              default=False, show_default=True,
+              help=("If set, rows added to table will be printed instantly,"
+                    "but with a short delay (to show the effect)."))
+def main(fg, bg, head_fg, head_bg, scroll_flag):
     print(("Simple test program, designed to demonstrate alignment of "
            "columns as well as border styles.\n"))
     print("Border styles are available from 'const.AVAILABLE_BORDERS' list.\n")
@@ -97,10 +107,18 @@ def main(fg, bg, head_fg, head_bg):
             head_fg=head_fg, head_bg=head_bg,
         )
 
-        for row in example_data:
-            bt.add_row(row)
+        if scroll_flag is True:
+            print("\n".join(bt.generate_header_lines()))
 
-        print("\n".join(bt.render()))
+        for row in example_data:
+            bt.add_row(row, instant=scroll_flag)
+            if scroll_flag is True:
+                sleep(0.5)
+
+        if scroll_flag is False:
+            print("\n".join(bt.render()))
+        else:
+            print(bt.generate_end_line())
         print("")
 
 

@@ -26,7 +26,7 @@ class BasicTable(object):
         self.border_style = border
         self.border_symbols = const.border_symbols[self.border_style]
 
-    def _gen_header_lines(self):
+    def generate_header_lines(self):
         header_lines = [
             self._gen_header_top(),
             self.generate_header_line(),
@@ -34,9 +34,12 @@ class BasicTable(object):
         ]
         return header_lines
 
+    def generate_end_line(self):
+        return self._gen_table_bottom()
+
     def render(self):
         # Get the table's header lines
-        table_lines = self._gen_header_lines()
+        table_lines = self.generate_header_lines()
 
         for row in self.rows:
             table_lines.append(self._gen_table_row(row))
