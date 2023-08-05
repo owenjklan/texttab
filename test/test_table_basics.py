@@ -3,6 +3,7 @@ Unit tests for texttab basic functionality
 """
 import pytest
 
+from texttab.const import ANSI_SEQ_RESET, FG_COLOURS, BG_COLOURS
 from texttab.table import BasicTable
 
 
@@ -165,3 +166,61 @@ def test_data_row_suitable_type_given():
 
     with pytest.raises(TypeError):
         bt.add_row(test_data)
+
+
+@pytest.mark.parametrize(
+    "test_columns, expected", [
+        (
+            [  # Testing fg colour adds FG colour and reset sequence on column label
+                {
+                    "label": "Col 3",
+                    "width": 10,
+                    "align": "center",
+                    "fg": "blue"
+                },
+                {
+                    "label": "Value",
+                    "width": 10,
+                    "align": "center"
+                }
+            ],
+            u"\u2502" + FG_COLOURS["blue"] + "  Col 3   " + ANSI_SEQ_RESET + "\u2502  Value   \u2502"
+        ),
+        ##################
+        (
+            [  # Test FG & BG adds both sequences, FG colour first, and adds reset to end of label text
+                {
+                    "label": "Column 3",
+                    "width": 14,
+                    "align": "centre",
+                    "fg": "yellow",
+                    "bg": "blue"
+                },
+                {
+                    "label": "Value",
+                    "width": 10,
+                    "align": "center"
+                }
+            ],
+            u"\u2502" + FG_COLOURS["yellow"] + BG_COLOURS["blue"] + "   Column 3   " + ANSI_SEQ_RESET + "\u2502  Value   \u2502"
+        )
+    ])
+def test_header_label_colour_and_reset_sequences(test_columns, expected):
+    """
+    Ensure that the ANSI reset sequence is added to header label text,
+    but only if a colour attribute was used, FG or BG. We also need to
+    test the colour sequences appear, of course. The FG sequence will
+    appear before the BG.
+
+    Also add to our test parameters two consecutive columns of the
+    same colour, to ensure the reset chars are still present.
+
+    Minimum width (ie: no second field given in tuple) will be:
+      Tw + 2N + (N-1) + 2
+      Tw = Text width
+      2N = Number of columns * 2 (for text spacing)
+      +2 = constant for left and right edges
+    """
+    bt = BasicTable(columns=test_columns)
+    assert bt.generate_header_line() == expected
+
