@@ -102,3 +102,6 @@ BG_COLOURS = {
     "cyan": "\033[46m",
     "white": "\033[47m"
 }
+
+# ANSI control sequences
+ANSI_SEQ_RESET = "\033[0m"  # Reset all attributes

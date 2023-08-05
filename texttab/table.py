@@ -2,7 +2,7 @@
 Basic text-based table classes
 """
 import texttab.const as const
-from texttab.const import FG_COLOURS, BG_COLOURS
+from texttab.const import FG_COLOURS, BG_COLOURS, ANSI_SEQ_RESET
 
 
 class BasicTable(object):
@@ -85,18 +85,28 @@ class BasicTable(object):
             else:
                 fmt_str = " {:" + str(col['width'] - 2) + "s} "
 
+            # Add colour, if required
+            add_reset_after_label = False
             if "head_fg" in col.keys():
                 generated_label += const.FG_COLOURS[col["head_fg"]]
+                add_reset_after_label = True
             elif "fg" in col.keys():
                 generated_label += const.FG_COLOURS[col["fg"]]
+                add_reset_after_label = True
 
             if "head_bg" in col.keys():
                 generated_label += const.BG_COLOURS[col["head_bg"]]
+                add_reset_after_label = True
             elif "bg" in col.keys():
                 generated_label += const.BG_COLOURS[col["bg"]]
+                add_reset_after_label = True
 
             generated_label += fmt_str.format(col['label'])
-            generated_label += "\033[0m"
+
+            # Reset attributes before closing out the header label?
+            if add_reset_after_label:
+                generated_label += ANSI_SEQ_RESET
+
             col['gen_label'] = generated_label
 
     def calculate_table_width(self):
@@ -136,8 +146,12 @@ class BasicTable(object):
 
         return colour_string, reset_colour
 
-
-    def generate_header_line(self):
+    def generate_header_line(self) -> str:
+        """
+        Generate the "header line" for the table. This is the line that contains
+        the textual content of the header cells, not the top-most line of the
+        table border.
+        """
         line = ""
         colour_string, reset_colours = self.get_head_colour_prefix()
 
@@ -147,7 +161,7 @@ class BasicTable(object):
         line += colour_string + self.border_symbols["VBAR"]
 
         if reset_colours is True:
-            line += "\033[0m"
+            line += ANSI_SEQ_RESET
         return line
 
     def _gen_header_top(self):
@@ -169,7 +183,7 @@ class BasicTable(object):
         line += self.border_symbols["TOP_RIGHT"]
 
         if reset_colours is True:
-            line += "\033[0m"
+            line += ANSI_SEQ_RESET
         return line
 
     def _gen_header_bottom(self):
@@ -185,7 +199,7 @@ class BasicTable(object):
         line += colour_string + self.border_symbols["RIGHT_TEE"]
 
         if reset_colours is True:
-            line += "\033[0m"
+            line += ANSI_SEQ_RESET
 
         return line
 
@@ -200,7 +214,7 @@ class BasicTable(object):
         line += colour_string + self.border_symbols["BOTTOM_RIGHT"]
 
         if reset_colours is True:
-            line = line + "\033[0m"
+            line = line + ANSI_SEQ_RESET
         return line
 
     def _gen_table_row(self, rowdata):
@@ -218,7 +232,7 @@ class BasicTable(object):
         line += colour_string + self.border_symbols["VBAR"]
 
         if reset_colours is True:
-            line += "\033[0m"
+            line += ANSI_SEQ_RESET
 
         return line
 
@@ -255,7 +269,7 @@ class BasicTable(object):
 
         # Reset ANSI sequence if we tweaked any colour options
         if reset_colour is True:
-            ret_str += "\033[0m"
+            ret_str += ANSI_SEQ_RESET
 
         return ret_str
 
