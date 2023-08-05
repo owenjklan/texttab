@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 import click
 
-from const import AVAILABLE_BORDERS
-from table import BasicTable
+from texttab.const import AVAILABLE_BORDERS
+from texttab.table import BasicTable
 
 
 class TestFormatter(object):
